@@ -1,0 +1,9 @@
+Resources:
+  catpics:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: catsareawesome123 
+  dogPics: 
+    Type: AWS::S3::Bucket
+      
+        

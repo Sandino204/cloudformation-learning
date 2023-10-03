@@ -1,0 +1,44 @@
+Parameters:
+  NameOfService:
+    Description: "The name of the service this stack is to be used for"
+    Type: String
+  KeyName:
+    Description: "Name of an existing EC2 KeyPair"
+    Type: AWS::EC2::KeyPair::KeyName
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-03a6eaae9938c858c
+
+Resources:
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap 
+        - RegionMap
+        - !Ref AWS::Region
+        - AMI
+      InstanceType: t2.micro
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameOfService
+      KeyName: !Ref KeyName
+      SecurityGroupIds: 
+        - !Ref MySecurityGroup
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access 
+      VpcId: #Required
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  ServerDns:
+    Value: !GetAtt 
+      - Ec2Instance
+      - PublicDnsName
